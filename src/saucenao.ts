@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import axios from 'axios'
 import nhentai from './nhentai'
 import danbooru from './danbooru'
@@ -63,7 +65,7 @@ export interface SaucenaoResponse {
   results: SaucenaoResult[]
 }
 
-export default async function saucenao (sourceUrl: string, meta: Meta, config: SaucenaoConfig, tryAscii2d = false) {
+export default async function saucenao (sourceUrl: string, meta: Meta, config: SaucenaoConfig, mixedMode = false) {
   let data: SaucenaoResponse
 
   try {
@@ -79,7 +81,7 @@ export default async function saucenao (sourceUrl: string, meta: Meta, config: S
       showLog(`[error] saucenao: ${err}`)
       return meta.$send('访问失败。')
     } else if (err.response.status === 429) {
-      return meta.$send(`搜索次数已达单位时间上限，请稍候再试。`)
+      return meta.$send('搜索次数已达单位时间上限，请稍候再试。')
     } else {
       showLog(`[error] saucenao: ${err.response.data}`)
       return meta.$send('由于未知原因搜索失败。')
@@ -127,13 +129,15 @@ export default async function saucenao (sourceUrl: string, meta: Meta, config: S
   let { thumbnail, similarity } = header
   const lowSimilarity = +similarity < (config.lowSimilarity ?? 40)
   const highSimilarity = +similarity > (config.highSimilarity ?? 60)
-  if (!highSimilarity) {
-    output.push(`相似度 (${similarity}%) 较低，这可能不是你要找的图。`)
-    if (tryAscii2d) output[0] += '将自动使用 ascii2d 继续进行搜索。'
-  }
+
   if (lowSimilarity) {
     output.push(`相似度 (${similarity}%) 过低，这很可能不是你要找的图。`)
-  } else {
+  } else if (!highSimilarity) {
+    output.push(`相似度 (${similarity}%) 较低，这可能不是你要找的图。`)
+    if (mixedMode) output[0] += '将自动使用 ascii2d 继续进行搜索。'
+  }
+
+  if (!lowSimilarity || !mixedMode) {
     if (jp_name || eng_name) {
       const bookName = (jp_name || eng_name).replace('(English)', '')
       const book = await nhentai(bookName)
@@ -154,5 +158,5 @@ export default async function saucenao (sourceUrl: string, meta: Meta, config: S
   }
 
   await meta.$send(output.join('\n'))
-  return !highSimilarity && tryAscii2d
+  return !highSimilarity && mixedMode
 }

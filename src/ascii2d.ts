@@ -18,7 +18,7 @@ export default async function (url: string, meta: Meta) {
     } catch (err) {
       showLog(`[error] ascii2d bovw ${err}`)
     }
-    return Promise.all(tasks)
+    await Promise.all(tasks)
   } catch (err) {
     showLog(`[error] ascii2d color ${err}`)
     return meta.$send('访问失败。')
