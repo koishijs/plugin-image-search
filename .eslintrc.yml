@@ -1,0 +1,39 @@
+root: true
+
+parser: '@typescript-eslint/parser'
+
+parserOptions:
+  project:
+    - ./tsconfig.json
+    - ./packages/*/tsconfig.json
+
+extends: standard
+
+plugins:
+  - '@typescript-eslint'
+
+rules:
+  camelcase: off
+  comma-dangle:
+    - warn
+    - always-multiline
+  # https://github.com/typescript-eslint/typescript-eslint/issues/618
+  no-dupe-class-members: off
+  # https://github.com/typescript-eslint/typescript-eslint/issues/239
+  no-inner-declarations: off
+  no-mixed-operators: off
+  # https://github.com/typescript-eslint/typescript-eslint/issues/1220
+  no-unused-expressions: off
+  no-unused-vars: off
+  no-return-assign: off
+  no-sequences: off
+  # https://github.com/typescript-eslint/typescript-eslint/issues/1131
+  no-useless-constructor: off
+  one-var: off
+  operator-linebreak: off
+  space-before-function-paren: off
+  '@typescript-eslint/no-unused-expressions': warn
+  '@typescript-eslint/prefer-nullish-coalescing': warn
+  '@typescript-eslint/prefer-optional-chain': warn
+  '@typescript-eslint/space-before-function-paren': warn
+  '@typescript-eslint/type-annotation-spacing': warn

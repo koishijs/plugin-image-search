@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 import axios from 'axios'
 import nhentai from './nhentai'
 import danbooru from './danbooru'
