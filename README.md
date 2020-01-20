@@ -1,4 +1,4 @@
-# [koishi-plugin-image-search](https://koishijs.github.io/plugins/image-search)
+# [koishi-plugin-image-search](https://koishi.js.org/plugins/other/image-search)
  
 [![npm](https://img.shields.io/npm/v/koishi-plugin-image-search?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-image-search)
 

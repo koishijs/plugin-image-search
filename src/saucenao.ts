@@ -5,7 +5,7 @@ import konachan from './konachan'
 import { Meta } from 'koishi-core'
 import { noop } from 'koishi-utils'
 import { getShareText, showLog } from './utils'
-import { SaucenaoConfig } from '.'
+import { ImageSearchConfig } from '.'
 
 export interface SaucenaoIndex {
   status: number
@@ -63,7 +63,7 @@ export interface SaucenaoResponse {
   results: SaucenaoResult[]
 }
 
-export default async function saucenao (sourceUrl: string, meta: Meta, config: SaucenaoConfig, mixedMode = false) {
+export default async function saucenao (sourceUrl: string, meta: Meta, config: ImageSearchConfig, mixedMode = false) {
   let data: SaucenaoResponse
 
   try {

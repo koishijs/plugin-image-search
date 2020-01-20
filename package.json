@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/koishijs/plugin-image-search/issues"
   },
-  "homepage": "https://github.com/koishijs/plugin-image-search#readme",
+  "homepage": "https://koishi.js.org/plugins/other/image-search",
   "keywords": [
     "bot",
     "qqbot",
@@ -33,26 +33,24 @@
     "ascii2d",
     "pixiv"
   ],
-  "peerDependencies": {
-    "koishi-core": "^1.2.0",
-    "koishi-utils": "^1.0.2"
-  },
   "devDependencies": {
     "@types/cheerio": "^0.22.15",
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.5"
   },
   "dependencies": {
     "axios": "^0.19.1",
     "cheerio": "^1.0.0-rc.3",
     "debug": "^4.1.1",
+    "koishi-core": "^1.5.0",
+    "koishi-utils": "^1.0.2",
     "nhentai-api-js": "^1.1.2"
   }
 }

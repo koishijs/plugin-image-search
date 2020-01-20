@@ -1,23 +1,10 @@
-import { Context, Middleware, Meta, CommandConfig } from 'koishi-core'
+import { Context, Middleware, Meta } from 'koishi-core'
 import ascii2d from './ascii2d'
 import saucenao from './saucenao'
 
-export interface SaucenaoConfig extends CommandConfig {
-  /** 相似度较低的认定标准（百分比），默认值为 40 */
-  lowSimilarity?: number
-  /** 相似度较高的认定标准（百分比），默认值为 60 */
-  highSimilarity?: number
-}
-
 export interface ImageSearchConfig {
-  /** 基本配置参数，将用于所有搜图相关指令 */
-  baseConfig?: CommandConfig
-  /** image-search 指令的额外配置 */
-  mixedConfig?: CommandConfig
-  /** saucenao 指令的额外配置 */
-  saucenaoConfig?: SaucenaoConfig
-  /** ascii2d 指令的额外配置 */
-  ascii2dConfig?: CommandConfig
+  lowSimilarity?: number
+  highSimilarity?: number
 }
 
 const imageRE = /\[CQ:image,file=([^,]+),url=([^\]]+)\]/g
@@ -49,22 +36,20 @@ async function searchImage (ctx: Context, meta: Meta, callback: (url: string) =>
   ctx.prependMiddleware(middleware)
 }
 
-async function mixedSearch (url: string, meta: Meta, config: SaucenaoConfig) {
+async function mixedSearch (url: string, meta: Meta, config: ImageSearchConfig) {
   return await saucenao(url, meta, config, true) && ascii2d(url, meta)
 }
 
 export const name = 'image-search'
 
 export function apply (ctx: Context, config: ImageSearchConfig = {}) {
-  const { baseConfig = {}, saucenaoConfig = {}, ascii2dConfig = {} } = config
-
-  const command = ctx.command('image-search <...images>', '搜图片', baseConfig)
+  const command = ctx.command('image-search <...images>', '搜图片')
     .alias('搜图')
-    .action(({ meta }) => searchImage(ctx, meta, url => mixedSearch(url, meta, saucenaoConfig)))
+    .action(({ meta }) => searchImage(ctx, meta, url => mixedSearch(url, meta, config)))
 
-  command.subcommand('saucenao <...images>', '使用 saucenao 搜图', { ...baseConfig, ...saucenaoConfig })
-    .action(({ meta }) => searchImage(ctx, meta, url => saucenao(url, meta, saucenaoConfig)))
+  command.subcommand('saucenao <...images>', '使用 saucenao 搜图')
+    .action(({ meta }) => searchImage(ctx, meta, url => saucenao(url, meta, config)))
 
-  command.subcommand('ascii2d <...images>', '使用 ascii2d 搜图', { ...baseConfig, ...ascii2dConfig })
+  command.subcommand('ascii2d <...images>', '使用 ascii2d 搜图')
     .action(({ meta }) => searchImage(ctx, meta, url => ascii2d(url, meta)))
 }
