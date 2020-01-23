@@ -15,8 +15,8 @@ export function getShareText (url: string, title: string, file: string, authorUr
   const output = [
     title,
     CQCode.stringify('image', { file }),
-    `链接：${getLink(url)}`,
   ]
+  if (url) output.push(`链接：${getLink(url)}`)
   if (authorUrl) output.push(`作者：${getLink(authorUrl)}`)
   if (source) output.push(`来源：${getLink(source)}`)
   return output.join('\n')
