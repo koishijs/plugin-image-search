@@ -40,11 +40,11 @@ export interface SaucenaoResultHeader {
 }
 
 export interface SaucenaoResultData {
-  ext_urls: string[]
-  creator: string
-  material: string
-  characters: string
+  ext_urls?: string[]
   source: string
+  creator: string
+  material?: string
+  characters?: string
   title?: string
   gelbooru_id?: number
   member_name?: string
@@ -120,9 +120,6 @@ export default async function saucenao (sourceUrl: string, meta: Meta, config: I
   }
 
   const output: string[] = []
-  const displayTitle = member_name
-    ? `「${title}」/「${member_name}」`
-    : title || (url.includes('anidb.net') ? 'AniDB' : '搜索结果')
 
   let { thumbnail, similarity } = header
   const lowSimilarity = +similarity < (config.lowSimilarity ?? 40)
@@ -138,16 +135,35 @@ export default async function saucenao (sourceUrl: string, meta: Meta, config: I
   if (!lowSimilarity || !mixedMode) {
     if (jp_name || eng_name) {
       const bookName = (jp_name || eng_name).replace('(English)', '')
-      const book = await nhentai(bookName)
-      if (book) {
-        thumbnail = book.thumbnail.s
-        url = `https://nhentai.net/g/${book.id}/`
-      } else {
-        output.push('没有在 nhentai 找到对应的本子_(:3」∠)_')
+
+      try {
+        const book = await nhentai(bookName)
+        if (book) {
+          thumbnail = book.thumbnail.s
+          url = `https://nhentai.net/g/${book.id}/`
+        } else {
+          output.push('没有在 nhentai 找到对应的本子_(:3」∠)_')
+        }
+      } catch (error) {
+        console.log(error)
       }
-      output.push(getShareText(url, `(${similarity}%) ${bookName}`, thumbnail))
+
+      output.push(getShareText({
+        url,
+        thumbnail,
+        title: `(${similarity}%) ${bookName}`,
+      }))
     } else {
-      output.push(getShareText(url, `(${similarity}%) ${displayTitle}`, thumbnail, member_id && url.includes('pixiv.net') && `https://pixiv.net/u/${member_id}`, source))
+      const displayTitle = member_name
+        ? `「${title}」/「${member_name}」`
+        : title || (url?.includes('anidb.net') ? 'AniDB' : '搜索结果')
+      output.push(getShareText({
+        url,
+        thumbnail,
+        title: `(${similarity}%) ${displayTitle}`,
+        authorUrl: member_id && url.includes('pixiv.net') && `https://pixiv.net/u/${member_id}`,
+        source,
+      }))
     }
   }
 

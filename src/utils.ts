@@ -11,10 +11,18 @@ export function getLink (url: string) {
   return url
 }
 
-export function getShareText (url: string, title: string, file: string, authorUrl?: string, source?: string) {
+export interface ShareData {
+  url: string
+  title: string
+  thumbnail: string
+  authorUrl?: string
+  source?: string
+}
+
+export function getShareText ({ url, title, thumbnail, authorUrl, source }: ShareData) {
   const output = [
     title,
-    CQCode.stringify('image', { file }),
+    CQCode.stringify('image', { file: thumbnail }),
   ]
   if (url) output.push(`链接：${getLink(url)}`)
   if (authorUrl) output.push(`作者：${getLink(authorUrl)}`)

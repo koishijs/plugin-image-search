@@ -32,8 +32,12 @@ function getDetail (html: string) {
   const $link = $box.find('.detail-box a')
   const $title = $($link[0])
   const $author = $($link[1])
-  const displayTitle = $author
-    ? `「${$title.html()}」/「${$author.html()}」`
-    : $title.html()
-  return getShareText($title.attr('href'), displayTitle, thumbnail, $author.attr('href'))
+  return getShareText({
+    url: $title.attr('href'),
+    title: $author
+      ? `「${$title.html()}」/「${$author.html()}」`
+      : $title.html(),
+    thumbnail,
+    authorUrl: $author.attr('href'),
+  })
 }
