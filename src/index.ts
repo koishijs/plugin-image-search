@@ -1,4 +1,4 @@
-import { Context, Middleware, Meta } from 'koishi-core'
+import { Context, Meta } from 'koishi-core'
 import ascii2d from './ascii2d'
 import saucenao from './saucenao'
 
@@ -18,22 +18,19 @@ function extractImages (message: string) {
   return result
 }
 
-async function searchImage (ctx: Context, meta: Meta, callback: (url: string) => Promise<any>) {
+function searchImage (ctx: Context, meta: Meta, callback: (url: string) => Promise<any>) {
   const urls = extractImages(meta.message)
   if (urls.length) {
     return Promise.all(urls.map(url => callback(url)))
   }
 
-  await meta.$send('请发送图片。')
-  const identifier = meta.userId + meta.$ctxType + meta.$ctxId
-  const middleware: Middleware = (meta, next) => {
-    if (identifier !== meta.userId + meta.$ctxType + meta.$ctxId) return next()
-    ctx.removeMiddleware(middleware)
+  ctx.onceMiddleware((meta, next) => {
     const urls = extractImages(meta.message)
     if (!urls.length) return next()
     return Promise.all(urls.map(url => callback(url)))
-  }
-  ctx.prependMiddleware(middleware)
+  }, meta)
+
+  return meta.$send('请发送图片。')
 }
 
 async function mixedSearch (url: string, meta: Meta, config: ImageSearchConfig) {
